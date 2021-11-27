@@ -17,18 +17,20 @@ namespace PromotionEngineLib.Promotions
             if (PricingItems.FindAll(j => j.SKUId == SKUId).Sum(j => j.Count) >= Count)
             {
                 var n = Count;
-                foreach (var pricingItem in PricingItems)
+                for (int i = PricingItems.Count-1; i >= 0; i--)
                 {
+                    var pricingItem = PricingItems[i];
                     if (pricingItem.SKUId != SKUId)
                         continue;
 
                     var cnt = Math.Min(n, pricingItem.Count);
                     pricingItem.Count -= cnt;
+                    if (pricingItem.Count == 0)
+                        PricingItems.RemoveAt(i);
                     n -= cnt;
                     if (n == 0)
                         break;
                 }
-                PricingItems.RemoveAll(j => j.Count == 0);
 
                 PricingItems.Add(new PricingItem()
                 {
