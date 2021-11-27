@@ -29,7 +29,7 @@ namespace PromotionEngineXUnit.Tests
 
         [Theory]
         [MemberData(nameof(TestData))]
-        public void CalculateCorrectPrice(char[] SKUIds, Dictionary<char, int> PriceList, decimal ExpectedPrice)
+        public void CalculateCorrectPrice(char[] SKUIds, Dictionary<char, decimal> PriceList, decimal ExpectedPrice)
         {
             // Arrange
             var promotionEngine = new SUT.PromotionEngine();
