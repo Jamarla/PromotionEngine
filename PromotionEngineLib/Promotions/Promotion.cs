@@ -8,7 +8,6 @@ namespace PromotionEngineLib.Promotions
 {
     public abstract class Promotion
     {
-        public decimal Price { get; set; }
         public abstract bool Apply(List<PricingItem> PricingItems);
 
         protected void RemoveNItemsOfSKU(List<PricingItem> PricingItems, char SKUId, int n)

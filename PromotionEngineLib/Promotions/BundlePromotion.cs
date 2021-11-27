@@ -9,6 +9,7 @@ namespace PromotionEngineLib.Promotions
     public class BundlePromotion : Promotion
     {
         public char[] BundledSKUIds { get; set; }
+        public decimal Price { get; set; }
         public override bool Apply(List<PricingItem> PricingItems)
         {
             var lookup = BundledSKUIds.ToLookup(j => j, j => j);

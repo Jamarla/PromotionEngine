@@ -10,6 +10,7 @@ namespace PromotionEngineLib.Promotions
     {
         public char SKUId { get; set; }
         public int Count { get; set; }
+        public decimal Price { get; set; }
         public override bool Apply(List<PricingItem> PricingItems)
         {
             bool result = false;
