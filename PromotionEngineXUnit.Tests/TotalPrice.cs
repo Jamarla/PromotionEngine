@@ -16,7 +16,8 @@ namespace PromotionEngineXUnit.Tests
                 { 'A', 50.0M },
                 { 'B', 30.0M },
                 { 'C', 20.0M },
-                { 'D', 15.0M }
+                { 'D', 15.0M },
+                { 'E', 54.49M }
             };
         public static List<SUT.Promotions.Promotion> TestPromotionList =>
             new List<SUT.Promotions.Promotion>
@@ -37,6 +38,17 @@ namespace PromotionEngineXUnit.Tests
                 {
                     BundledSKUIds = new char[] { 'C', 'D' },
                     Price = 30
+                },
+                new SUT.Promotions.nItemsOfSKUPromotion
+                {
+                    SKUId = 'E',
+                    Count = 2,
+                    Price = 62.94M
+                },
+                new SUT.Promotions.DiscountPromotion
+                {
+                    SKUId = 'E',
+                    Discount = 40.0M
                 }
             };
 
@@ -79,6 +91,16 @@ namespace PromotionEngineXUnit.Tests
                     TestPriceList,
                     TestPromotionList,
                     280.0M
+                },
+                new object[]  //Scenario Discount
+                {
+                    new List<SUT.CartItem>
+                    {
+                        new SUT.CartItem() { SKUId = 'E', Count = 5 },
+                    },
+                    TestPriceList,
+                    TestPromotionList,
+                    158.574M
                 }
             };
 
