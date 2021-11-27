@@ -5,13 +5,13 @@ namespace PromotionEngineLib
 {
     public class PromotionEngine
     {
-        public decimal TotalPrice(char[] SKUIds, Dictionary<char, decimal> priceList)
+        public decimal TotalPrice(List<CartItem> CartItems, Dictionary<char, decimal> priceList)
         {
             var result = 0.0M;
-            foreach (var sku in SKUIds)
+            foreach (var cartItem in CartItems)
             {
-                if (!priceList.TryGetValue(sku, out var price))
-                    throw new ArgumentException($"Unknown SKUId { sku }");
+                if (!priceList.TryGetValue(cartItem.SKUId, out var price))
+                    throw new ArgumentException($"Unknown SKUId { cartItem.SKUId }");
 
                 result += price;
             }
