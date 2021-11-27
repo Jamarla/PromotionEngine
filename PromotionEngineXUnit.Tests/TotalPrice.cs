@@ -32,6 +32,11 @@ namespace PromotionEngineXUnit.Tests
                     SKUId = 'B',
                     Count = 2,
                     Price = 45
+                },
+                new SUT.Promotions.BundlePromotion
+                {
+                    BundledSKUIds = new char[] { 'C', 'D' },
+                    Price = 30
                 }
             };
 
@@ -61,6 +66,19 @@ namespace PromotionEngineXUnit.Tests
                     TestPriceList,
                     TestPromotionList,
                     370.0M
+                },
+                new object[]  //Scenario C
+                {
+                    new List<SUT.CartItem>
+                    {
+                        new SUT.CartItem() { SKUId = 'A', Count = 3 },
+                        new SUT.CartItem() { SKUId = 'B', Count = 5 },
+                        new SUT.CartItem() { SKUId = 'C', Count = 1 },
+                        new SUT.CartItem() { SKUId = 'D', Count = 1 }
+                    },
+                    TestPriceList,
+                    TestPromotionList,
+                    280.0M
                 }
             };
 
