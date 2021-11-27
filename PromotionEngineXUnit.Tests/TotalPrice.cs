@@ -18,6 +18,23 @@ namespace PromotionEngineXUnit.Tests
                 { 'C', 20.0M },
                 { 'D', 15.0M }
             };
+        public static List<SUT.Promotions.Promotion> TestPromotionList =>
+            new List<SUT.Promotions.Promotion>
+            {
+                new SUT.Promotions.nItemsOfSKUPromotion
+                {
+                    SKUId = 'A',
+                    Count = 3,
+                    Price = 130
+                },
+                new SUT.Promotions.nItemsOfSKUPromotion
+                {
+                    SKUId = 'B',
+                    Count = 2,
+                    Price = 45
+                }
+            };
+
         public static IEnumerable<object[]> TestData =>
             new List<object[]>
             {
@@ -30,6 +47,7 @@ namespace PromotionEngineXUnit.Tests
                         new SUT.CartItem() { SKUId = 'C', Count = 1 },
                     },
                     TestPriceList,
+                    TestPromotionList,
                     100.0M
                 },
                 new object[]  //Scenario B
@@ -41,19 +59,24 @@ namespace PromotionEngineXUnit.Tests
                         new SUT.CartItem() { SKUId = 'C', Count = 1 },
                     },
                     TestPriceList,
+                    TestPromotionList,
                     370.0M
                 }
             };
 
         [Theory]
         [MemberData(nameof(TestData))]
-        public void CalculateCorrectPrice(List<SUT.CartItem> CartItems, Dictionary<char, decimal> PriceList, decimal ExpectedPrice)
+        public void CalculateCorrectPrice(
+            List<SUT.CartItem> CartItems, 
+            Dictionary<char, decimal> PriceList, 
+            List<SUT.Promotions.Promotion> PromotionList, 
+            decimal ExpectedPrice)
         {
             // Arrange
             var promotionEngine = new SUT.PromotionEngine();
 
             // Act
-            decimal calculatedTotalPrice = promotionEngine.TotalPrice(CartItems, PriceList);
+            decimal calculatedTotalPrice = promotionEngine.TotalPrice(CartItems, PriceList, PromotionList);
 
             // Assert
             Assert.Equal(expected: ExpectedPrice, actual: calculatedTotalPrice);
