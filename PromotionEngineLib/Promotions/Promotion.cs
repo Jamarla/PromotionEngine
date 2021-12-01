@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PromotionEngineLib.Prices;
 
 namespace PromotionEngineLib.Promotions
 {
     public interface IPromotion
     {
-        internal bool Apply(List<IPricingItem> PricingItems);
+        internal bool Apply(List<IPricingItem> PricingItems, IPriceQuery PriceQuery);
     }
 
     public abstract class Promotion

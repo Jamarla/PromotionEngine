@@ -29,41 +29,27 @@ namespace PromotionEngineXUnit.Tests
             _discountPromotionCreator = discountPromotionCreator;
         }
 
-        public static Dictionary<char, decimal> TestPriceList =>
-            new Dictionary<char, decimal>
-            {
-                { 'A', 50.0M },
-                { 'B', 30.0M },
-                { 'C', 20.0M },
-                { 'D', 15.0M },
-                { 'E', 54.49M }
-            };
-
         public static IEnumerable<object[]> TestData =>
             new List<object[]>
             {
                 new object[]  //Scenario A: 1 * A, 1 * B, 1 * C
                 {
                     1,  //CartId
-                    TestPriceList,
                     100.0M  //Expected price 
                 },
                 new object[]  //Scenario B: 5 * A, 5 * B, 1 * C
                 {
                     2,  //CartId
-                    TestPriceList,
                     370.0M  //Expected price 
                 },
                 new object[]  //Scenario C: 3 * A, 5 * B, 1 * C, 1 * D
                 {
                     3,  //CartId
-                    TestPriceList,
                     280.0M  //Expected price 
                 },
                 new object[]  //Scenario D: 5 * E
                 {
                     4,  //CartId
-                    TestPriceList,
                     158.574M  //Expected price 
                 }
             };
@@ -72,7 +58,6 @@ namespace PromotionEngineXUnit.Tests
         [MemberData(nameof(TestData))]
         public void CalculateCorrectPrice(
             int CartId, 
-            Dictionary<char, decimal> PriceList, 
             decimal ExpectedPrice)
         {
             // Arrange
@@ -86,7 +71,7 @@ namespace PromotionEngineXUnit.Tests
             };
             
             // Act
-            decimal calculatedTotalPrice = _promotionEngine.TotalPrice(CartId, PriceList, promotions);
+            decimal calculatedTotalPrice = _promotionEngine.TotalPrice(CartId, promotions);
 
             // Assert
             Assert.Equal(expected: ExpectedPrice, actual: calculatedTotalPrice);

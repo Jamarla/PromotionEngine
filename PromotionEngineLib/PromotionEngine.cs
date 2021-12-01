@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using PromotionEngineLib.Carts;
+using PromotionEngineLib.Prices;
 
 namespace PromotionEngineLib
 {
     public interface IPromotionEngine
     {
-        decimal TotalPrice(int cartId, Dictionary<char, decimal> priceList, List<Promotions.IPromotion> promotionList);
+        decimal TotalPrice(int cartId, List<Promotions.IPromotion> promotionList);
     }
 
     public class PromotionEngine : IPromotionEngine
@@ -20,24 +21,26 @@ namespace PromotionEngineLib
             _serviceProvider = ServiceProvider;
         }
 
-        public decimal TotalPrice(int cartId, Dictionary<char, decimal> priceList, List<Promotions.IPromotion> promotionList)
+        public decimal TotalPrice(int cartId, List<Promotions.IPromotion> promotionList)
         {
             var result = 0.0M;
 
             var cartQuery = _serviceProvider.GetRequiredService<ICartQuery>();
             var CartItems = cartQuery.GetItemsByCartId(cartId);
+            var priceQuery = _serviceProvider.GetRequiredService<IPriceQuery>();
 
             var pricingItems = new List<IPricingItem>();
             foreach (var cartItem in CartItems)
             {
-                if (!priceList.TryGetValue(cartItem.SKUId, out var price))
+                var price = priceQuery.GetBySKUId(cartItem.SKUId);
+                if (price == null)
                     throw new ArgumentException($"Unknown SKUId { cartItem.SKUId }");
 
                 pricingItems.Add(new PricingItem
                 {
                     SKUId = cartItem.SKUId,
                     Count = cartItem.Count,
-                    Price = price,
+                    Price = price.Price,
                     Description = ""
                 });
             }
@@ -45,7 +48,7 @@ namespace PromotionEngineLib
             foreach (var promotion in promotionList)
             {
                 do
-                { } while (promotion.Apply(pricingItems));
+                { } while (promotion.Apply(pricingItems, priceQuery));
             }
 
             result = pricingItems.Sum(j => j.Count * j.Price);

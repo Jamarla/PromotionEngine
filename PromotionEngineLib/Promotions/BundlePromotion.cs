@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PromotionEngineLib.Prices;
 
 namespace PromotionEngineLib.Promotions
 {
@@ -10,7 +11,7 @@ namespace PromotionEngineLib.Promotions
     {
         public char[] BundledSKUIds { get; set; }
         public decimal Price { get; set; }
-        bool IPromotion.Apply(List<IPricingItem> PricingItems)
+        bool IPromotion.Apply(List<IPricingItem> PricingItems, IPriceQuery PriceQuery)
         {
             var lookup = BundledSKUIds.ToLookup(j => j, j => j);
             var isApplicable = true;

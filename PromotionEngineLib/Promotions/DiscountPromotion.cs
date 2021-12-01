@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PromotionEngineLib.Prices;
 
 namespace PromotionEngineLib.Promotions
 {
@@ -11,13 +12,16 @@ namespace PromotionEngineLib.Promotions
         public char SKUId { get; set; }
         //Discount in percentage. For example 15.0
         public decimal Discount { get; set; }
-        bool IPromotion.Apply(List<IPricingItem> PricingItems)
+        bool IPromotion.Apply(List<IPricingItem> PricingItems, IPriceQuery PriceQuery)
         {
-            var item = PricingItems.FindLast(j => j.SKUId == SKUId);
-            if (item == null)
+            if (!PricingItems.Any(j => j.SKUId == SKUId))
                 return false;
 
-            var discountedPrice = item.Price * (100.0M - Discount) / 100.0M;
+            var price = PriceQuery.GetBySKUId(SKUId);
+            if (price == null)
+                return false;
+
+            var discountedPrice = price.Price * (100.0M - Discount) / 100.0M;
 
             RemoveNItemsOfSKU(PricingItems, SKUId, 1);
 
