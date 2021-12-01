@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace PromotionEngineLib.Promotions
 {
-    public class DiscountPromotion : Promotion
+    public class DiscountPromotion : Promotion, IPromotion
     {
         public char SKUId { get; set; }
         //Discount in percentage. For example 15.0
         public decimal Discount { get; set; }
-        public override bool Apply(List<PricingItem> PricingItems)
+        bool IPromotion.Apply(List<IPricingItem> PricingItems)
         {
             var item = PricingItems.FindLast(j => j.SKUId == SKUId);
             if (item == null)

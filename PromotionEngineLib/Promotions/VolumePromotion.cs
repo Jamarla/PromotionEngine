@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace PromotionEngineLib.Promotions
 {
-    public class nItemsOfSKUPromotion : Promotion
+    public class VolumePromotion : Promotion, IPromotion
     {
         public char SKUId { get; set; }
         public int Count { get; set; }
         public decimal Price { get; set; }
-        public override bool Apply(List<PricingItem> PricingItems)
+        bool IPromotion.Apply(List<IPricingItem> PricingItems)
         {
             bool result = false;
             if (PricingItems.FindAll(j => j.SKUId == SKUId).Sum(j => j.Count) >= Count)

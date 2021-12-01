@@ -9,7 +9,10 @@ namespace PromotionEngineXUnit.Tests
         {
             services
                 .AddSingleton<SUT.IPromotionEngine, SUT.PromotionEngine>()
-                .AddSingleton<SUT.Carts.ICartQuery, TestData.TestCartQuery>();
+                .AddSingleton<SUT.Carts.ICartQuery, TestData.TestCartQuery>()
+                .AddSingleton<SUT.Promotions.IVolumePromotionCreator, SUT.Promotions.VolumePromotionCreator>()
+                .AddSingleton<SUT.Promotions.IBundlePromotionCreator, SUT.Promotions.BundlePromotionCreator>()
+                .AddSingleton<SUT.Promotions.IDiscountPromotionCreator, SUT.Promotions.DiscountPromotionCreator>();
         }
     }
 }

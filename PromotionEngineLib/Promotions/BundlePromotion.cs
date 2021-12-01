@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace PromotionEngineLib.Promotions
 {
-    public class BundlePromotion : Promotion
+    public class BundlePromotion : Promotion, IPromotion
     {
         public char[] BundledSKUIds { get; set; }
         public decimal Price { get; set; }
-        public override bool Apply(List<PricingItem> PricingItems)
+        bool IPromotion.Apply(List<IPricingItem> PricingItems)
         {
             var lookup = BundledSKUIds.ToLookup(j => j, j => j);
             var isApplicable = true;

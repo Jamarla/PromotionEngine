@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace PromotionEngineLib
 {
-    public class PricingItem
+    internal interface IPricingItem
+    {
+        string Description { get; set; }
+        char SKUId { get; set; }
+        int Count { get; set; }
+        decimal Price { get; set; }
+    }
+
+    internal class PricingItem : IPricingItem
     {
         public string Description { get; set; }
         public char SKUId { get; set; }

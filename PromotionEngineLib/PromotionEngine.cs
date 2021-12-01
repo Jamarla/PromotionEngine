@@ -8,7 +8,7 @@ namespace PromotionEngineLib
 {
     public interface IPromotionEngine
     {
-        decimal TotalPrice(int cartId, Dictionary<char, decimal> priceList, List<Promotions.Promotion> promotionList);
+        decimal TotalPrice(int cartId, Dictionary<char, decimal> priceList, List<Promotions.IPromotion> promotionList);
     }
 
     public class PromotionEngine : IPromotionEngine
@@ -20,14 +20,14 @@ namespace PromotionEngineLib
             _serviceProvider = ServiceProvider;
         }
 
-        public decimal TotalPrice(int cartId, Dictionary<char, decimal> priceList, List<Promotions.Promotion> promotionList)
+        public decimal TotalPrice(int cartId, Dictionary<char, decimal> priceList, List<Promotions.IPromotion> promotionList)
         {
             var result = 0.0M;
 
             var cartQuery = _serviceProvider.GetRequiredService<ICartQuery>();
             var CartItems = cartQuery.GetItemsByCartId(cartId);
 
-            var pricingItems = new List<PricingItem>();
+            var pricingItems = new List<IPricingItem>();
             foreach (var cartItem in CartItems)
             {
                 if (!priceList.TryGetValue(cartItem.SKUId, out var price))

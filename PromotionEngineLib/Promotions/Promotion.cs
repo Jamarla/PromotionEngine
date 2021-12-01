@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace PromotionEngineLib.Promotions
 {
+    public interface IPromotion
+    {
+        internal bool Apply(List<IPricingItem> PricingItems);
+    }
+
     public abstract class Promotion
     {
-        public abstract bool Apply(List<PricingItem> PricingItems);
-
-        protected void RemoveNItemsOfSKU(List<PricingItem> PricingItems, char SKUId, int n)
+        internal void RemoveNItemsOfSKU(List<IPricingItem> PricingItems, char SKUId, int n)
         {
             for (int i = PricingItems.Count - 1; i >= 0; i--)
             {
