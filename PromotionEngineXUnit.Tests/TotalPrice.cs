@@ -5,11 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using SUT = PromotionEngineLib;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PromotionEngineXUnit.Tests
 {
     public class TotalPrice_Should
     {
+        private readonly SUT.IPromotionEngine _promotionEngine;
+
+        public TotalPrice_Should(SUT.IPromotionEngine promotionEngine)
+        {
+            _promotionEngine = promotionEngine;
+        }
+
         public static Dictionary<char, decimal> TestPriceList =>
             new Dictionary<char, decimal>
             {
@@ -55,68 +63,48 @@ namespace PromotionEngineXUnit.Tests
         public static IEnumerable<object[]> TestData =>
             new List<object[]>
             {
-                new object[]  //Scenario A
+                new object[]  //Scenario A: 1 * A, 1 * B, 1 * C
                 {
-                    new List<SUT.CartItem> 
-                    { 
-                        new SUT.CartItem() { SKUId = 'A', Count = 1 },
-                        new SUT.CartItem() { SKUId = 'B', Count = 1 },
-                        new SUT.CartItem() { SKUId = 'C', Count = 1 },
-                    },
+                    1,  //CartId
                     TestPriceList,
                     TestPromotionList,
-                    100.0M
+                    100.0M  //Expected price 
                 },
-                new object[]  //Scenario B
+                new object[]  //Scenario B: 5 * A, 5 * B, 1 * C
                 {
-                    new List<SUT.CartItem>
-                    {
-                        new SUT.CartItem() { SKUId = 'A', Count = 5 },
-                        new SUT.CartItem() { SKUId = 'B', Count = 5 },
-                        new SUT.CartItem() { SKUId = 'C', Count = 1 },
-                    },
+                    2,  //CartId
                     TestPriceList,
                     TestPromotionList,
-                    370.0M
+                    370.0M  //Expected price 
                 },
-                new object[]  //Scenario C
+                new object[]  //Scenario C: 3 * A, 5 * B, 1 * C, 1 * D
                 {
-                    new List<SUT.CartItem>
-                    {
-                        new SUT.CartItem() { SKUId = 'A', Count = 3 },
-                        new SUT.CartItem() { SKUId = 'B', Count = 5 },
-                        new SUT.CartItem() { SKUId = 'C', Count = 1 },
-                        new SUT.CartItem() { SKUId = 'D', Count = 1 }
-                    },
+                    3,  //CartId
                     TestPriceList,
                     TestPromotionList,
-                    280.0M
+                    280.0M  //Expected price 
                 },
-                new object[]  //Scenario Discount
+                new object[]  //Scenario D: 5 * E
                 {
-                    new List<SUT.CartItem>
-                    {
-                        new SUT.CartItem() { SKUId = 'E', Count = 5 },
-                    },
+                    4,  //CartId
                     TestPriceList,
                     TestPromotionList,
-                    158.574M
+                    158.574M  //Expected price 
                 }
             };
 
         [Theory]
         [MemberData(nameof(TestData))]
         public void CalculateCorrectPrice(
-            List<SUT.CartItem> CartItems, 
+            int CartId, 
             Dictionary<char, decimal> PriceList, 
             List<SUT.Promotions.Promotion> PromotionList, 
             decimal ExpectedPrice)
         {
             // Arrange
-            var promotionEngine = new SUT.PromotionEngine();
 
             // Act
-            decimal calculatedTotalPrice = promotionEngine.TotalPrice(CartItems, PriceList, PromotionList);
+            decimal calculatedTotalPrice = _promotionEngine.TotalPrice(CartId, PriceList, PromotionList);
 
             // Assert
             Assert.Equal(expected: ExpectedPrice, actual: calculatedTotalPrice);

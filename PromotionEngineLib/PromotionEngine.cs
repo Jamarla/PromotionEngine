@@ -1,14 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using PromotionEngineLib.Carts;
 
 namespace PromotionEngineLib
 {
-    public class PromotionEngine
+    public interface IPromotionEngine
     {
-        public decimal TotalPrice(List<CartItem> CartItems, Dictionary<char, decimal> priceList, List<Promotions.Promotion> promotionList)
+        decimal TotalPrice(int cartId, Dictionary<char, decimal> priceList, List<Promotions.Promotion> promotionList);
+    }
+
+    public class PromotionEngine : IPromotionEngine
+    {
+        private IServiceProvider _serviceProvider;
+
+        public PromotionEngine(IServiceProvider ServiceProvider)
+        {
+            _serviceProvider = ServiceProvider;
+        }
+
+        public decimal TotalPrice(int cartId, Dictionary<char, decimal> priceList, List<Promotions.Promotion> promotionList)
         {
             var result = 0.0M;
+
+            var cartQuery = _serviceProvider.GetRequiredService<ICartQuery>();
+            var CartItems = cartQuery.GetItemsByCartId(cartId);
 
             var pricingItems = new List<PricingItem>();
             foreach (var cartItem in CartItems)
