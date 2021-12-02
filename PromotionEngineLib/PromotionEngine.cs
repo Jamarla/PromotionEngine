@@ -14,25 +14,25 @@ namespace PromotionEngineLib
 
     public class PromotionEngine : IPromotionEngine
     {
-        private IServiceProvider _serviceProvider;
+        private ICartQuery _cartQuery;
+        private IPriceQuery _priceQuery;
 
-        public PromotionEngine(IServiceProvider ServiceProvider)
+        public PromotionEngine(ICartQuery cartQuery, IPriceQuery priceQuery)
         {
-            _serviceProvider = ServiceProvider;
+            _cartQuery = cartQuery;
+            _priceQuery = priceQuery;
         }
 
         public decimal TotalPrice(int cartId, List<Promotions.IPromotion> promotionList)
         {
             var result = 0.0M;
 
-            var cartQuery = _serviceProvider.GetRequiredService<ICartQuery>();
-            var CartItems = cartQuery.GetItemsByCartId(cartId);
-            var priceQuery = _serviceProvider.GetRequiredService<IPriceQuery>();
+            var CartItems = _cartQuery.GetItemsByCartId(cartId);
 
             var pricingItems = new List<IPricingItem>();
             foreach (var cartItem in CartItems)
             {
-                var price = priceQuery.GetBySKUId(cartItem.SKUId);
+                var price = _priceQuery.GetBySKUId(cartItem.SKUId);
                 if (price == null)
                     throw new ArgumentException($"Unknown SKUId { cartItem.SKUId }");
 
@@ -48,7 +48,7 @@ namespace PromotionEngineLib
             foreach (var promotion in promotionList)
             {
                 do
-                { } while (promotion.Apply(pricingItems, priceQuery));
+                { } while (promotion.Apply(pricingItems, _priceQuery));
             }
 
             result = pricingItems.Sum(j => j.Count * j.Price);

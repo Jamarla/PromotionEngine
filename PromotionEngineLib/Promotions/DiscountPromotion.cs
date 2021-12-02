@@ -19,7 +19,7 @@ namespace PromotionEngineLib.Promotions
 
             var price = PriceQuery.GetBySKUId(SKUId);
             if (price == null)
-                return false;
+                throw new ArgumentException($"Unknown SKUId { SKUId }");
 
             var discountedPrice = price.Price * (100.0M - Discount) / 100.0M;
 
