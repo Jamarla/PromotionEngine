@@ -63,14 +63,9 @@ namespace PromotionEngineXUnit.Tests
                 }
             };
 
-        [Theory]
-        [MemberData(nameof(TestData))]
-        public void CalculateCorrectPrice(
-            int CartId,
-            decimal ExpectedPrice)
+        private List<SUT.Promotions.IPromotion> SetupPromotions()
         {
-            // Arrange
-            var promotions = new List<SUT.Promotions.IPromotion>()
+            return new List<SUT.Promotions.IPromotion>()
             {
                 _volumePromotionCreator.Create(SKUId: 'A', Count: 3, Price: 130),
                 _volumePromotionCreator.Create(SKUId: 'B', Count: 2, Price: 45),
@@ -78,6 +73,16 @@ namespace PromotionEngineXUnit.Tests
                 _volumePromotionCreator.Create(SKUId: 'E', Count: 2, Price: 62.94M),
                 _discountPromotionCreator.Create(SKUId: 'E', Discount: 40.0M)
             };
+        }
+
+        [Theory]
+        [MemberData(nameof(TestData))]
+        public void CalculateCorrectPrice(
+            int CartId,
+            decimal ExpectedPrice)
+        {
+            // Arrange
+            var promotions = SetupPromotions();
 
             // Act
             decimal calculatedTotalPrice = _promotionEngine.TotalPrice(CartId, promotions);
@@ -93,15 +98,8 @@ namespace PromotionEngineXUnit.Tests
             decimal ExpectedPrice)
         {
             // Arrange
-            var promotions = new List<SUT.Promotions.IPromotion>()
-            {
-                _volumePromotionCreator.Create(SKUId: 'A', Count: 3, Price: 130),
-                _volumePromotionCreator.Create(SKUId: 'B', Count: 2, Price: 45),
-                _bundlePromotionCreator.Create(BundledSKUIds: new char[] { 'C', 'D' }, Price: 30),
-                _volumePromotionCreator.Create(SKUId: 'E', Count: 2, Price: 62.94M),
-                _discountPromotionCreator.Create(SKUId: 'E', Discount: 40.0M)
-            };
-            
+            var promotions = SetupPromotions();
+
             // Act
             decimal calculatedTotalPrice = await _promotionEngine.TotalPriceAsync(CartId, promotions);
 
@@ -114,14 +112,7 @@ namespace PromotionEngineXUnit.Tests
         public void ThrowArgumentExceptionOnUnknownSKUId(int CartId)
         {
             // Arrange
-            var promotions = new List<SUT.Promotions.IPromotion>()
-            {
-                _volumePromotionCreator.Create(SKUId: 'A', Count: 3, Price: 130),
-                _volumePromotionCreator.Create(SKUId: 'B', Count: 2, Price: 45),
-                _bundlePromotionCreator.Create(BundledSKUIds: new char[] { 'C', 'D' }, Price: 30),
-                _volumePromotionCreator.Create(SKUId: 'E', Count: 2, Price: 62.94M),
-                _discountPromotionCreator.Create(SKUId: 'E', Discount: 40.0M)
-            };
+            var promotions = SetupPromotions();
 
             // Act/Assert
             Assert.Throws<ArgumentException>(() => _promotionEngine.TotalPrice(CartId, promotions));
@@ -132,14 +123,7 @@ namespace PromotionEngineXUnit.Tests
         public async Task ThrowArgumentExceptionOnUnknownSKUIdAsynchronous(int CartId)
         {
             // Arrange
-            var promotions = new List<SUT.Promotions.IPromotion>()
-            {
-                _volumePromotionCreator.Create(SKUId: 'A', Count: 3, Price: 130),
-                _volumePromotionCreator.Create(SKUId: 'B', Count: 2, Price: 45),
-                _bundlePromotionCreator.Create(BundledSKUIds: new char[] { 'C', 'D' }, Price: 30),
-                _volumePromotionCreator.Create(SKUId: 'E', Count: 2, Price: 62.94M),
-                _discountPromotionCreator.Create(SKUId: 'E', Discount: 40.0M)
-            };
+            var promotions = SetupPromotions();
 
             // Act/Assert
             await Assert.ThrowsAsync<ArgumentException>(async () => await _promotionEngine.TotalPriceAsync(CartId, promotions));
