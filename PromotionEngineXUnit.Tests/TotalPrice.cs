@@ -57,6 +57,29 @@ namespace PromotionEngineXUnit.Tests
         [Theory]
         [MemberData(nameof(TestData))]
         public void CalculateCorrectPrice(
+            int CartId,
+            decimal ExpectedPrice)
+        {
+            // Arrange
+            var promotions = new List<SUT.Promotions.IPromotion>()
+            {
+                _volumePromotionCreator.Create(SKUId: 'A', Count: 3, Price: 130),
+                _volumePromotionCreator.Create(SKUId: 'B', Count: 2, Price: 45),
+                _bundlePromotionCreator.Create(BundledSKUIds: new char[] { 'C', 'D' }, Price: 30),
+                _volumePromotionCreator.Create(SKUId: 'E', Count: 2, Price: 62.94M),
+                _discountPromotionCreator.Create(SKUId: 'E', Discount: 40.0M)
+            };
+
+            // Act
+            decimal calculatedTotalPrice = _promotionEngine.TotalPrice(CartId, promotions);
+
+            // Assert
+            Assert.Equal(expected: ExpectedPrice, actual: calculatedTotalPrice);
+        }
+
+        [Theory]
+        [MemberData(nameof(TestData))]
+        public async Task CalculateCorrectPriceAsynchronous(
             int CartId, 
             decimal ExpectedPrice)
         {
@@ -71,7 +94,7 @@ namespace PromotionEngineXUnit.Tests
             };
             
             // Act
-            decimal calculatedTotalPrice = _promotionEngine.TotalPrice(CartId, promotions);
+            decimal calculatedTotalPrice = await _promotionEngine.TotalPriceAsync(CartId, promotions);
 
             // Assert
             Assert.Equal(expected: ExpectedPrice, actual: calculatedTotalPrice);

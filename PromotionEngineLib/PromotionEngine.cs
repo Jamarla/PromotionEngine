@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using PromotionEngineLib.Carts;
 using PromotionEngineLib.Prices;
@@ -10,6 +11,7 @@ namespace PromotionEngineLib
     public interface IPromotionEngine
     {
         decimal TotalPrice(int cartId, List<Promotions.IPromotion> promotionList);
+        Task<decimal> TotalPriceAsync(int cartId, List<Promotions.IPromotion> promotionList);
     }
 
     public class PromotionEngine : IPromotionEngine
@@ -54,6 +56,11 @@ namespace PromotionEngineLib
             result = pricingItems.Sum(j => j.Count * j.Price);
 
             return result;
+        }
+
+        public async Task<decimal> TotalPriceAsync(int cartId, List<Promotions.IPromotion> promotionList)
+        {
+            return await Task.Run(() => TotalPrice(cartId, promotionList));
         }
     }
 }
