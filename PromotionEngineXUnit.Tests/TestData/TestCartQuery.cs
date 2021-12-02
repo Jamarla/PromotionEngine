@@ -40,9 +40,15 @@ namespace PromotionEngineXUnit.Tests.TestData
                 {
                     4, new List<TestCartItem>
                     {
-                        new TestCartItem() { SKUId = 'E', Count = 5 },
+                        new TestCartItem() { SKUId = 'E', Count = 5 }
                     }
-                }
+                },
+                {
+                    5, new List<TestCartItem>
+                    {
+                        new TestCartItem() { SKUId = 'X', Count = 2 }  //Non existing SKUId for exception test
+                    }
+                }            
             };
         }
 
